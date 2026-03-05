@@ -1,118 +1,100 @@
-# Bittora IT Store
+﻿# Bittora IT
 
-## Description
-Bittora IT Store is a university Full Stack Web Development project for managing an online IT equipment shop.  
-The project uses MVC architecture with Express.js, EJS views, Sequelize ORM, and SQLite.
+## 1) ชื่อโปรเจค
 
-## Tech Stack
+**Bittora IT**
+
+## 2) รายละเอียดโปรเจค
+
+Bittora IT เป็นระบบจัดการสินค้าและคำสั่งซื้อ (Inventory และ Order Management System)
+ที่ใช้สำหรับจัดการสินค้า ผู้ใช้งาน และคำสั่งซื้อผ่านหน้า **Admin Dashboard**
+
+โปรเจคนี้แบ่งออกเป็น 2 ส่วนหลัก
+
+- **Frontend**: ทำงานที่ `http://localhost:3000`
+- **Backend**: ทำงานที่ `http://localhost:5000` ใช้ `Node.js` และ `Express` สำหรับให้บริการ `REST API`
+
+ฐานข้อมูลที่ใช้คือ **SQLirs**
+
+## 3) ฟีเจอร์ของระบบ
+
+- จัดการสินค้า
+- จัดการคำสั่งซื้อ
+- จัดการผู้ใช้งาน
+- Dashboard สำหรับผู้ดูแลระบบ
+
+## 4) โครงสร้างโปรเจค
+
+ตัวอย่างโครงสร้างโฟลเดอร์
+
+bittora-it/
+├── frontend/
+├── backend/
+├── controllers/
+├── models/
+└── routes/
+
+## 5) วิธีติดตั้งและใช้งานโปรเจค
+
+### ขั้นตอนที่ 1: Clone Repository
+
+```bash
+git clone <https://github.com/TypeN2003/bittora-it-B-N.git>
+```
+
+### ขั้นตอนที่ 2: ติดตั้ง Backend และ Frontend
+
+```bash
+npm run install-all
+```
+
+### ขั้นตอนที่ 3: สร้างไฟล์ `.env`
+
+สร้างไฟล์ `.env` ในโฟลเดอร์ `backend`และ `frontend`แล้วกำหนดค่า:
+
+```.envbackend
+PORT=5000
+```
+
+```.envfrontend
+PORT=3000
+```
+
+### ขั้นตอนที่ 4: รัน Backend
+
+```bash
+npm run start-backend
+```
+
+### ขั้นตอนที่ 6: รัน Frontend
+
+```bash
+npm run start-frontend
+```
+
+## 6) ตัวอย่าง API
+
+```http
+GET /api/products
+POST /api/products
+GET /api/orders
+```
+
+## 7) เทคโนโลยีที่ใช้
+
 - Node.js
-- Express.js
-- EJS
-- Sequelize ORM
-- SQLite
+- Express
+- SQLirs
+- JavaScript
+- HTML
 - CSS
 
-## Database Design
-Main tables:
-- `users`
-- `products`
-- `orders`
-- `order_items` (junction table)
-- `categories` (supporting product classification)
+## 8) พอร์ตที่ใช้
 
-Key Sequelize associations:
-- `User.hasMany(Order)`
-- `Order.belongsTo(User)`
-- `Order.belongsToMany(Product, { through: OrderItem })`
-- `Product.belongsToMany(Order, { through: OrderItem })`
-- `Order.hasMany(OrderItem)`
-- `OrderItem.belongsTo(Order)`
-- `Product.hasMany(OrderItem)`
-- `OrderItem.belongsTo(Product)`
-- `Category.hasMany(Product)`
-- `Product.belongsTo(Category)`
+### Frontend
 
-## Features
-- Full CRUD for:
-  - Users
-  - Products
-  - Orders
-  - Order Items
-- Dashboard with aggregate statistics:
-  - Total users
-  - Total products
-  - Total orders
-  - Total revenue
-- Reports:
-  - Sales report with date/month filter and summary totals
-  - Best-selling products report with quantity and revenue ranking
-- Responsive UI with shared navbar partial
-- Flash success/error alerts
-- Delete confirmation dialogs
+- `http://localhost:3000`
 
-## Reports Explanation
-1. Sales Report (`/reports/sales`)
-- Filters by specific date or month
-- Shows summary by order date:
-  - Order date
-  - Total orders
-  - Total revenue
-- Also shows detailed order rows for verification
+### Backend API
 
-2. Best Products Report (`/reports/best-products`)
-- Uses `order_items` join aggregation
-- Shows:
-  - Product name
-  - Total quantity sold
-  - Total revenue per product
-
-## Installation
-```bash
-git clone https://github.com/TypeN2003/bittora-it.git
-cd bittora-it
-npm install
-```
-
-## Run Instructions
-Development mode:
-```bash
-npm run dev
-```
-
-Production mode:
-```bash
-npm start
-```
-
-Open:
-`http://localhost:3000`
-
-## Seed Command
-```bash
-npm run seed
-```
-
-Seed includes:
-- 10+ users
-- 15+ products
-- 15+ orders
-- realistic order items
-
-## Route Overview
-- `/` dashboard
-- `/users`
-- `/products`
-- `/orders`
-- `/order_items` (also supports `/order-items`)
-- `/reports`
-- `/reports/sales`
-- `/reports/best-products`
-
-## Screenshots
-- Dashboard page
-- Products CRUD page
-- Orders + Order Items CRUD page
-- Sales report page
-- Best products report page
-
-Add your screenshots in this section before final submission.
+- `http://localhost:5000`
