@@ -1,0 +1,37 @@
+<div class="page-title-row">
+  <h1>Best Selling Products</h1>
+  <a href="/reports" class="btn btn-cancel">Back to Reports</a>
+</div>
+
+<%
+  const safeBestSelling = Array.isArray(bestSelling) ? bestSelling : []
+  const safeBestMonthByProductId = bestMonthByProductId || {}
+%>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Best Month</th>
+        <th>Total Quantity Sold</th>
+        <th>Total Revenue</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (!safeBestSelling.length) { %>
+        <tr><td colspan="4">No sales data available.</td></tr>
+      <% } %>
+
+      <% safeBestSelling.forEach(item => { %>
+        <% const pid = Number(item.get('product_id')) %>
+        <tr>
+          <td><%= item.get('product_name') %></td>
+          <td><%= safeBestMonthByProductId[pid] || '-' %></td>
+          <td><%= Number(item.get('total_quantity_sold')) %></td>
+          <td>$<%= Number(item.get('total_revenue')).toFixed(2) %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

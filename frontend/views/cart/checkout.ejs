@@ -1,0 +1,80 @@
+<div class="page-title-row">
+  <h1>Checkout</h1>
+  <div class="actions">
+    <a href="/cart" class="btn btn-secondary">Back to Cart</a>
+  </div>
+</div>
+
+<div class="checkout-grid">
+  <article class="card checkout-card">
+    <h2>Payment Information</h2>
+    <form action="/cart/checkout" method="POST" class="form-grid checkout-form">
+      <label for="customer_name">Full Name</label>
+      <input
+        id="customer_name"
+        name="customer_name"
+        type="text"
+        required
+        value="<%= formData.customer_name %>"
+      />
+
+      <label for="phone">Phone</label>
+      <input
+        id="phone"
+        name="phone"
+        type="text"
+        required
+        value="<%= formData.phone %>"
+      />
+
+      <label for="address">Address</label>
+      <textarea
+        id="address"
+        name="address"
+        required
+      ><%= formData.address %></textarea>
+
+      <label for="payment_method">Payment Method</label>
+      <select id="payment_method" name="payment_method" required>
+        <option value="promptpay" <%= formData.payment_method === 'promptpay' ? 'selected' : '' %>>PromptPay</option>
+        <option value="bank_transfer" <%= formData.payment_method === 'bank_transfer' ? 'selected' : '' %>>Bank Transfer</option>
+        <option value="cash_on_delivery" <%= formData.payment_method === 'cash_on_delivery' ? 'selected' : '' %>>Cash on Delivery</option>
+      </select>
+
+      <label for="note">Note (optional)</label>
+      <textarea id="note" name="note"><%= formData.note %></textarea>
+
+      <div class="form-actions">
+        <a href="/cart" class="btn btn-cancel">Cancel</a>
+        <button type="submit" class="btn btn-create">Confirm Payment</button>
+      </div>
+    </form>
+  </article>
+
+  <article class="card checkout-summary-card">
+    <h2>Order Summary</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% items.forEach(item => { %>
+            <tr>
+              <td><%= item.product.product_name %></td>
+              <td><%= item.quantity %></td>
+              <td>$<%= Number(item.subtotal).toFixed(2) %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <div class="checkout-total">
+      <strong>Total:</strong> $<%= Number(total).toFixed(2) %>
+    </div>
+  </article>
+</div>

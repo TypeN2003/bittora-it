@@ -1,0 +1,122 @@
+<div class="page-title-row">
+  <h1>My Cart</h1>
+  <div class="actions">
+    <a href="/" class="btn btn-secondary">Continue Shopping</a>
+    <% if (items.length) { %>
+      <form action="/cart/clear" method="POST" class="inline-form">
+        <button type="submit" class="btn btn-danger" data-confirm-delete="Clear all items in cart?">Clear Cart</button>
+      </form>
+    <% } %>
+  </div>
+</div>
+
+<% if (!items.length) { %>
+  <article class="card">
+    <p>Your cart is empty.</p>
+  </article>
+<% } else { %>
+  <div class="table-wrap">
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>Select</th>
+          <th>Image</th>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% items.forEach(item => { %>
+          <tr data-subtotal="<%= Number(item.subtotal) %>" data-product-id="<%= item.product.product_id %>">
+            <td>
+              <input
+                type="checkbox"
+                class="cart-select js-cart-select"
+                <%= Array.isArray(selectedProductIds) && selectedProductIds.includes(Number(item.product.product_id)) ? 'checked' : '' %>
+              />
+            </td>
+            <td>
+              <% if (item.product.image_url) { %>
+                <img src="<%= item.product.image_url %>" alt="<%= item.product.product_name %>" class="product-thumb" />
+              <% } else { %>
+                -
+              <% } %>
+            </td>
+            <td><%= item.product.product_name %></td>
+            <td>$<%= Number(item.product.price).toFixed(2) %></td>
+            <td><%= item.product.stock %></td>
+            <td>
+              <form action="/cart/update" method="POST" class="inline-form cart-qty-form">
+                <input type="hidden" name="product_id" value="<%= item.product.product_id %>" />
+                <input
+                  type="number"
+                  name="quantity"
+                  min="1"
+                  max="<%= item.product.stock %>"
+                  value="<%= item.quantity %>"
+                  class="qty-input"
+                />
+                <button type="submit" class="btn btn-secondary">Update</button>
+              </form>
+            </td>
+            <td>$<%= Number(item.subtotal).toFixed(2) %></td>
+            <td class="cart-actions">
+              <form action="/cart/remove" method="POST" class="inline-form">
+                <input type="hidden" name="product_id" value="<%= item.product.product_id %>" />
+                <button type="submit" class="btn btn-delete">Remove</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cart-summary">
+    <p><strong>Total:</strong> $<%= Number(total).toFixed(2) %></p>
+    <p><strong>Selected Total:</strong> $<span id="selectedTotal">0.00</span></p>
+    <form action="/cart/checkout/select" method="POST" class="inline-form" id="checkoutSelectForm">
+      <input type="hidden" name="selected_product_ids" id="selectedProductIdsInput" />
+      <button type="submit" class="btn btn-create">Pay Now</button>
+    </form>
+  </div>
+<% } %>
+
+<script>
+  ;(function () {
+    const checkboxes = Array.from(document.querySelectorAll('.js-cart-select'))
+    const totalEl = document.getElementById('selectedTotal')
+    const selectedInput = document.getElementById('selectedProductIdsInput')
+    const checkoutForm = document.getElementById('checkoutSelectForm')
+    if (!checkboxes.length || !totalEl || !selectedInput || !checkoutForm) return
+
+    function recalculateSelectedTotal() {
+      const selectedIds = []
+      const selectedTotal = checkboxes.reduce((sum, checkbox) => {
+        if (!checkbox.checked) return sum
+        const row = checkbox.closest('tr')
+        const productId = Number(row && row.getAttribute('data-product-id') ? row.getAttribute('data-product-id') : 0)
+        if (productId > 0) selectedIds.push(productId)
+        const subtotal = Number(row && row.getAttribute('data-subtotal') ? row.getAttribute('data-subtotal') : 0)
+        return sum + subtotal
+      }, 0)
+
+      selectedInput.value = selectedIds.join(',')
+      totalEl.textContent = selectedTotal.toFixed(2)
+    }
+
+    checkboxes.forEach(checkbox => checkbox.addEventListener('change', recalculateSelectedTotal))
+    checkoutForm.addEventListener('submit', function (event) {
+      recalculateSelectedTotal()
+      if (!selectedInput.value) {
+        event.preventDefault()
+        window.alert('Please select at least one item.')
+      }
+    })
+    recalculateSelectedTotal()
+  })()
+</script>

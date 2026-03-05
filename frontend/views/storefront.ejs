@@ -1,0 +1,115 @@
+<section>
+  <div class="store-header">
+    <h1>Products</h1>
+    <p class="muted">Browse available items with images and details.</p>
+  </div>
+
+  <div class="store-grid">
+    <% if (!products.length) { %>
+      <article class="card">
+        <p>No products available.</p>
+      </article>
+    <% } %>
+
+    <% products.forEach(product => { %>
+      <% const isUploadedImage = product.image_url && product.image_url.includes('/uploads/') %>
+      <article class="store-card">
+        <div class="store-media">
+          <% if (product.image_url) { %>
+            <img
+              src="<%= product.image_url %>"
+              alt="<%= product.product_name %>"
+              class="store-image <%= isUploadedImage ? 'store-image-uploaded' : '' %>"
+            />
+          <% } else { %>
+            <div class="store-image-placeholder">No Image</div>
+          <% } %>
+        </div>
+        <div class="store-content">
+          <h2 class="store-title"><%= product.product_name %></h2>
+          <p class="muted store-category"><%= product.Category ? product.Category.category_name : '-' %></p>
+
+          <div class="store-facts">
+            <p class="store-fact">
+              <span class="store-fact-label">Price:</span>
+              <span class="store-fact-value">$<%= Number(product.price).toFixed(2) %></span>
+            </p>
+            <p class="store-fact">
+              <span class="store-fact-label">Stock:</span>
+              <span class="store-fact-value"><%= product.stock %></span>
+            </p>
+            <p class="store-fact">
+              <span class="store-fact-label">Description:</span>
+              <span class="store-fact-value store-fact-value--clamp"><%= product.description || '-' %></span>
+            </p>
+          </div>
+
+          <div class="actions store-actions">
+            <form action="/cart/add" method="POST" class="inline-form js-add-to-cart-form">
+              <input type="hidden" name="product_id" value="<%= product.product_id %>" />
+              <input type="hidden" name="return_to" value="/" />
+              <div class="qty-control" data-stock="<%= product.stock %>">
+                <button type="button" class="btn btn-secondary qty-btn js-qty-dec">-</button>
+                <input type="number" name="quantity" value="1" min="1" max="<%= product.stock %>" class="qty-input js-qty-input" />
+                <button type="button" class="btn btn-secondary qty-btn js-qty-inc">+</button>
+              </div>
+              <button type="submit" class="btn btn-create">Order</button>
+            </form>
+          </div>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+</section>
+
+<script>
+  ;(function () {
+    document.addEventListener('click', function (event) {
+      const plusBtn = event.target.closest('.js-qty-inc')
+      const minusBtn = event.target.closest('.js-qty-dec')
+      if (!plusBtn && !minusBtn) return
+
+      const wrapper = event.target.closest('.qty-control')
+      if (!wrapper) return
+
+      const input = wrapper.querySelector('.js-qty-input')
+      if (!input) return
+
+      const stock = Number(wrapper.getAttribute('data-stock') || 1)
+      const current = Math.max(1, Number(input.value || 1))
+      const next = plusBtn ? current + 1 : current - 1
+      input.value = String(Math.min(stock, Math.max(1, next)))
+    })
+
+    document.addEventListener('submit', async function (event) {
+      const form = event.target.closest('.js-add-to-cart-form')
+      if (!form) return
+
+      event.preventDefault()
+
+      try {
+        const formData = new FormData(form)
+        formData.set('ajax', '1')
+
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new URLSearchParams(formData)
+        })
+
+        const payload = await response.json()
+        if (!response.ok || !payload.ok) {
+          window.alert(payload.message || 'Failed to add item to cart.')
+          return
+        }
+
+        const badge = document.querySelector('.js-cart-count')
+        if (badge && Number.isFinite(Number(payload.cart_count))) {
+          badge.textContent = String(payload.cart_count)
+        }
+      } catch (_) {
+        window.alert('Failed to add item to cart.')
+      }
+    })
+  })()
+</script>

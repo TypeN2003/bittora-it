@@ -1,0 +1,11 @@
+<h1>Edit Category</h1>
+
+<form action="/categories/<%= category.category_id %>?_method=PUT" method="POST" class="form-grid">
+  <label for="category_name">Category Name</label>
+  <input id="category_name" type="text" name="category_name" value="<%= category.category_name %>" required />
+
+  <div class="form-actions">
+    <a href="/categories" class="btn btn-cancel">Cancel</a>
+    <button type="submit" class="btn btn-primary">Update</button>
+  </div>
+</form>

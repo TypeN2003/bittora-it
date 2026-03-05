@@ -1,0 +1,48 @@
+<div class="page-title-row">
+  <h1>ประวัติคำสั่งซื้อของฉัน</h1>
+  <a href="/" class="btn btn-secondary">กลับหน้าหลัก</a>
+</div>
+
+<% if (!orders || !orders.length) { %>
+  <article class="card">
+    <p>ยังไม่มีประวัติคำสั่งซื้อ</p>
+  </article>
+<% } %>
+
+<% (orders || []).forEach(order => { %>
+  <article class="order-history-card">
+    <div class="order-history-head">
+      <strong>Bittora IT Store</strong>
+      <div class="order-history-meta">
+        <span class="muted"><%= new Date(order.order_date).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }) %></span>
+        <span class="status-badge <%= String(order.status || '').toLowerCase() === 'cancelled' ? 'status-cancelled' : 'status-pending' %>">
+          <%= order.status %>
+        </span>
+      </div>
+    </div>
+
+    <div class="order-history-items">
+      <% (order.OrderItems || []).forEach(item => { %>
+        <div class="order-history-item">
+          <div class="order-history-left">
+            <% if (item.Product && item.Product.image_url) { %>
+              <img src="<%= item.Product.image_url %>" alt="<%= item.Product.product_name %>" class="history-thumb" />
+            <% } else { %>
+              <div class="history-thumb history-thumb-empty">-</div>
+            <% } %>
+            <div>
+              <div class="history-product-name"><%= item.Product ? item.Product.product_name : '-' %></div>
+              <div class="muted">x<%= Number(item.quantity || 0) %></div>
+            </div>
+          </div>
+          <strong>$<%= Number(item.subtotal || 0).toFixed(2) %></strong>
+        </div>
+      <% }) %>
+    </div>
+
+    <div class="order-history-foot">
+      <span class="muted">หมายเลขคำสั่งซื้อ #<%= order.order_id %></span>
+      <strong>รวมการสั่งซื้อ: $<%= Number(order.total_price || 0).toFixed(2) %></strong>
+    </div>
+  </article>
+<% }) %>
