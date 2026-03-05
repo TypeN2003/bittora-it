@@ -66,7 +66,7 @@ PORT=3000
 npm run start-backend
 ```
 
-### ขั้นตอนที่ 6: รัน Frontend
+### ขั้นตอนที่ 5: รัน Frontend
 
 ```bash
 npm run start-frontend
