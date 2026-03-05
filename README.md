@@ -36,10 +36,10 @@ bittora-it/
 
 ## 5) วิธีติดตั้งและใช้งานโปรเจค
 
-### ขั้นตอนที่ 1: Clone Repository
+### ขั้นตอนที่ 1: โหลดโปรเจ็คมาจาก github
 
 ```bash
-git clone <[https://github.com/TypeN2003/bittora-it-B-N.git](https://github.com/TypeN2003/bittora-it.git)>
+git clone <https://github.com/TypeN2003/bittora-it.git>
 ```
 
 ### ขั้นตอนที่ 2: ติดตั้ง Backend และ Frontend
